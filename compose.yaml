@@ -1,0 +1,42 @@
+name: warehouse
+
+services:
+  pg:
+    container_name: warehouse_pg
+    image: postgres
+    restart: no
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: root
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./pgdump:/app/data
+
+  pgadmin:
+    container_name: warehouse_pgadmin
+    image: elestio/pgadmin:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - 8080:8080
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+
+  redis:
+    container_name: warehouse_redis
+    image: redis:latest
+    restart: no
+    ports:
+      - 6379:6379
+
+  redis_commander:
+    container_name: warehouse_redis_commander
+    image: rediscommander/redis-commander:latest
+    restart: no
+    environment:
+      - REDIS_HOST=local:redis:6379
+    ports:
+      - 8081:8081
