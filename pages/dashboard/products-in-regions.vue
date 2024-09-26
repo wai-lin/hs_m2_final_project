@@ -2,8 +2,9 @@
 import type { DataTablePageEvent } from 'primevue/datatable';
 
 definePageMeta({
-    title: "Stock Logs",
-});
+    title: "Products in Regions",
+    actions: "products_regions",
+})
 
 const pagination = reactive({
     page: 1,
@@ -15,7 +16,7 @@ function onPage(e: DataTablePageEvent) {
     pagination.page_size = e.rows
 }
 
-const { data, status, refresh } = await useFetch("/api/stock-logs", { query: pagination });
+const { data, status, refresh } = await useFetch("/api/products-regions", { query: pagination });
 </script>
 
 <template>
@@ -34,11 +35,11 @@ const { data, status, refresh } = await useFetch("/api/stock-logs", { query: pag
                 {{ ((pagination.page - 1) * pagination.page_size) + index + 1 }}
             </template>
         </Column>
-        <Column field="product.name" header="Product"></Column>
+        <Column field="product_name" header="Product Name"></Column>
         <Column field="region.name" header="Region"></Column>
-        <Column field="log_date" header="Logged At"></Column>
-        <Column field="action" header="Action"></Column>
-        <Column field="quantity" header="Quantity"></Column>
-        <Column field="quantity_change" header="Quantity Change"></Column>
+        <Column field="region.timezone" header="Timezone"></Column>
+        <Column field="price" header="Price"></Column>
+        <Column field="region.currency" header="Currency"></Column>
+        <Column field="stock_level" header="Stock Level"></Column>
     </DataTable>
 </template>

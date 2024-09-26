@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import type { DataTablePageEvent } from 'primevue/datatable';
 
 definePageMeta({
-    title: "Stock Logs",
-});
+    title: "Orders",
+    actions: "orders"
+})
 
 const pagination = reactive({
     page: 1,
@@ -15,7 +17,7 @@ function onPage(e: DataTablePageEvent) {
     pagination.page_size = e.rows
 }
 
-const { data, status, refresh } = await useFetch("/api/stock-logs", { query: pagination });
+const { data, status, refresh } = await useFetch("/api/orders", { query: pagination });
 </script>
 
 <template>
@@ -34,11 +36,18 @@ const { data, status, refresh } = await useFetch("/api/stock-logs", { query: pag
                 {{ ((pagination.page - 1) * pagination.page_size) + index + 1 }}
             </template>
         </Column>
-        <Column field="product.name" header="Product"></Column>
+        <Column field="order_date" header="Order Date">
+            <template #body="{data}">
+                {{ dayjs(data.order_date).format("DD, MMM YYYY(HH:mm:ss)") }}
+            </template>
+        </Column>
+        <Column field="total_price" header="Total Price"></Column>
+        <Column field="currency" header="Currency"></Column>
         <Column field="region.name" header="Region"></Column>
-        <Column field="log_date" header="Logged At"></Column>
-        <Column field="action" header="Action"></Column>
-        <Column field="quantity" header="Quantity"></Column>
-        <Column field="quantity_change" header="Quantity Change"></Column>
+        <Column field="region.timezone" header="Timezone"></Column>
+        <Column field="customer.name" header="Customer Name"></Column>
+        <Column field="customer.email" header="Customer Email"></Column>
+        <Column field="customer.address" header="Customer Address"></Column>
+        <Column field="customer.phone" header="Customer Phone"></Column>
     </DataTable>
 </template>

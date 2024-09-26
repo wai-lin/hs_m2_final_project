@@ -3,10 +3,16 @@ import type { MenuItem } from 'primevue/menuitem';
 
 const asideMenu = ref<MenuItem[]>([
     {
+        key: "aside_dashboard",
+        label: "Dashboard",
+        to: "/dashboard",
+        icon: "i-mynaui-box",
+    },
+    {
         key: "aside_regions",
         label: "Regions",
         to: "/dashboard/regions",
-        icon: "i-mynaui-location-home",
+        icon: "i-mynaui-map",
     },
     {
         key: "aside_products",
@@ -15,16 +21,22 @@ const asideMenu = ref<MenuItem[]>([
         icon: "i-mynaui-package",
     },
     {
-        key: "aside_orders",
-        label: "Orders",
-        to: "/dashboard/orders",
-        icon: "i-mynaui-list-check",
+        key: "aside_products_in_regions",
+        label: "Products in Regions",
+        to: "/dashboard/products-in-regions",
+        icon: "i-mynaui-location-home",
     },
     {
         key: "aside_customers",
         label: "Customers",
         to: "/dashboard/customers",
         icon: "i-mynaui-users-group",
+    },
+    {
+        key: "aside_orders",
+        label: "Orders",
+        to: "/dashboard/orders",
+        icon: "i-mynaui-list-check",
     },
     {
         key: "aside_stock_logs",
@@ -36,7 +48,7 @@ const asideMenu = ref<MenuItem[]>([
 </script>
 
 <template>
-    <section class="mx-auto max-w-[1920px] grid grid-cols-[20rem,1fr]">
+    <section class="relative mx-auto max-w-[1920px] grid grid-cols-[20rem,1fr]">
         <aside class="p-4 h-screen max-h-screen overflow-y-auto border-r border-slate-500">
             <article class="mb-4 border-b border-slate-500 p-4 flex items-end gap-4 h-16">
                 <img src="/favicon.png" alt="" class="size-10" />
@@ -46,27 +58,33 @@ const asideMenu = ref<MenuItem[]>([
             <PanelMenu :model="asideMenu">
                 <template #item="{ item }">
                     <NuxtLink v-if="item.to" :to="item.to" class="px-4 py-2 w-full flex items-center gap-2"
-                        active-class="text-blue-700">
+                        :activeClass="item.to != '/dashboard' ? 'text-green-600' : ''"
+                        :exactActiveClass="item.to == '/dashboard' ? 'text-green-600' : ''">
                         <i v-if="item.icon" :class="item.icon" class="size-8"></i>
-                        <span>{{ item.label }}</span>
+                        <span class="font-bold">{{ item.label }}</span>
                     </NuxtLink>
 
                     <p v-else class="px-4 py-2 w-full flex items-center gap-2">
                         <i v-if="item.icon" :class="item.icon" class="size-8"></i>
-                        <span>{{ item.label }}</span>
+                        <span class="font-bold">{{ item.label }}</span>
                     </p>
                 </template>
             </PanelMenu>
         </aside>
 
-        <article class="pt-4 px-4">
+        <article class="pt-4 px-4 grid grid-cols-1 grid-rows-[4rem_calc(100vh-4rem)]">
             <header class="mb-4 border-b border-slate-500 p-4 flex items-end justify-between h-16">
-                <h2 class="text-2xl font-bold">Hola !</h2>
+                <h2 class="text-2xl font-bold">{{ $route.meta.title || "Dashboard" }}</h2>
 
-                <Avatar src="https://picsum.photos/200" size="large" shape="circle" />
+                <ButtonGroup>
+                    <Button v-if="$route.meta.actions == 'orders'" rounded label="New Order" size="small"
+                        @click="$router.push('/dashboard/orders/create')" />
+                </ButtonGroup>
             </header>
 
-            <slot />
+            <main class="overflow-auto pb-10">
+                <slot />
+            </main>
         </article>
     </section>
 </template>
