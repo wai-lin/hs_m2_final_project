@@ -33,7 +33,7 @@ const { data: products } = useFetch("/api/products", {
 
 const selectedProducts = reactive(new Map<string, { name: string, quantity: number }>())
 watch(selectedProduct, (p) => {
-    if (p) {
+    if (p && p.product_id) {
         const eV = selectedProducts.get(p.product_id)
         const v = { name: p.product_name, quantity: 1 }
         selectedProducts.set(p.product_id, { ...v, ...eV })
@@ -75,7 +75,7 @@ async function createOrder() {
         </div>
         <div class="flex flex-col gap-2">
             <label>Products</label>
-            <Select v-model="selectedProduct" :options="products" optionLabel="product_name" showClear />
+            <Select v-model="selectedProduct" :options="products" optionLabel="product_name" showClear editable />
 
             <section class="flex flex-col gap-4 p-4 bg-slate-100 rounded-xl">
                 <article v-for="[id, { name }] in selectedProducts" :key="id" class="py-2 border-b border-slate-300">

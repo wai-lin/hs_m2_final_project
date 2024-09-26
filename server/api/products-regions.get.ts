@@ -1,5 +1,5 @@
-import { count, desc, eq } from "drizzle-orm"
-import { db } from "~/database/client"
+import { asc, count, desc, eq } from "drizzle-orm"
+import { db } from "~/database/pg_client"
 import { products, products_regions, regions } from "~/database/schema"
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
         if (pageSize > 100) pageSize = 100;
 
         const rowsToSkip = (page - 1) * pageSize;
-        console.log(pageSize);
 
         const total_rows = await db.select({ count: count(products_regions.product_id) }).from(products_regions)
         const result = await db.select({
@@ -25,7 +24,7 @@ export default defineEventHandler(async (event) => {
                 timezone: regions.timezone,
             },
         }).from(products_regions)
-            .orderBy(desc(products_regions.created_at))
+            .orderBy(asc(products_regions.stock_level), desc(products_regions.created_at))
             .innerJoin(products, eq(products.id, products_regions.product_id))
             .innerJoin(regions, eq(regions.id, products_regions.region_id))
             .offset(rowsToSkip)

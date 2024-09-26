@@ -20,6 +20,7 @@
     "nuxt": "^3.13.0",
     "postgres": "^3.4.4",
     "primevue": "^4.0.7",
+    "redis": "^4.7.0",
     "tailwindcss-primeui": "^0.3.4",
     "vue": "latest",
     "vue-router": "latest",

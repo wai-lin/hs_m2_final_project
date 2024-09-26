@@ -6,7 +6,7 @@ const asideMenu = ref<MenuItem[]>([
         key: "aside_dashboard",
         label: "Dashboard",
         to: "/dashboard",
-        icon: "i-mynaui-box",
+        icon: "i-mynaui-grid",
     },
     {
         key: "aside_regions",

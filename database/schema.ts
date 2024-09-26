@@ -98,7 +98,7 @@ export const stock_logs = pgTable("stock_logs", {
     ...base_columns,
     log_date: timestamp("log_date").defaultNow(),
     action: text("action").notNull().$type<"added" | "removed" | "sold">(),
-    quantity: integer("quantity_change").notNull(),
+    quantity: integer("quantity").notNull(),
     quantity_change: integer("quantity_change").notNull(),
     product_id: uuid("product_id")
         .references(() => products.id, { onDelete: "cascade" }),

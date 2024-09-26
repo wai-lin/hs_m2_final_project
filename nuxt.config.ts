@@ -19,6 +19,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+  nitro: {
+    experimental: {
+      websocket: true,
+    }
+  },
   primevue: {
     autoImport: true,
     options: {

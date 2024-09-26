@@ -1,5 +1,5 @@
 {
-  "id": "dd48ae4d-0eb2-4c84-87fa-cb9ef10adc7d",
+  "id": "c3f880d4-9e40-4171-b640-cdf68907e535",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -492,6 +492,12 @@
         "action": {
           "name": "action",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },

@@ -1,5 +1,5 @@
 import { count, desc, eq } from "drizzle-orm"
-import { db } from "~/database/client"
+import { db } from "~/database/pg_client"
 import { products, regions, stock_logs } from "~/database/schema"
 
 export default defineEventHandler(async (event) => {

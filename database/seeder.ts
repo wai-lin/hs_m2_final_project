@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { db } from "./client";
+import { db } from "./pg_client";
 import { customers, regions, products, products_regions, orders, orders_products, stock_logs, type NewRegion, type NewCustomer, type NewProduct, type NewProductRegion, type Product, type Region, type Customer, type NewOrder } from "./schema";
 
 // ==============================~~~==============================

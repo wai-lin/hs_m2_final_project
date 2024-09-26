@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS "stock_logs" (
 	"deleted_at" timestamp,
 	"log_date" timestamp DEFAULT now(),
 	"action" text NOT NULL,
+	"quantity" integer NOT NULL,
 	"quantity_change" integer NOT NULL,
 	"product_id" uuid,
 	"region_id" uuid

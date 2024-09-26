@@ -1,7 +1,10 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
-import { db } from "~/database/client";
+import { db } from "~/database/pg_client";
+import { getRedisClient } from "~/database/redis_client";
 import { orders, orders_products, products, products_regions, stock_logs } from "~/database/schema";
+import { StockLevelThreshold, ThresholdChannel } from "~/utils/threshold";
+import { getStocksUnderThreshold } from "~/utils/threshold.server";
 
 const orderRequestSchema = z.object({
     region_id: z.string().uuid(),
@@ -22,13 +25,14 @@ export default defineEventHandler(async (event) => {
 
     const orderRequest = parse.data
 
+    const redis = await getRedisClient()
+
     // 1. create new order
     // 2. record orders_products
     // 3. update products stock_level
-    // 4. set stock_level on redis if lower than threshold
     // 4. create log
     // catch: rollback transaction
-    // finally: update stock_level on redis again
+    // finally: set stock_level lower than threshold on redis
     return await db.transaction(async (tx) => {
         try {
             const product_ids = orderRequest.order_list.map((ol) => ol.product_id)
@@ -104,15 +108,19 @@ export default defineEventHandler(async (event) => {
                 })
             }
 
+            
             return {
                 msg: "Successfully received order.", result: null
             };
         } catch (e) {
+            console.error("Error : ", e)
             tx.rollback();
             setResponseStatus(event, 500)
             return { msg: "Something went wrong!", result: null, error: e };
         } finally {
             // update redis stock_level
+            const thresholds = await getStocksUnderThreshold(StockLevelThreshold, tx)
+            redis.publish(ThresholdChannel, JSON.stringify(thresholds))
         }
     });
 });
