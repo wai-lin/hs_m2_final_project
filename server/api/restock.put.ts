@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { z } from "zod"
 import { db } from "~/database/pg_client"
 import { getRedisClient } from "~/database/redis_client"
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     const { stock_level, product_id, region_id } = parse.data
     const result = await db
         .update(products_regions)
-        .set({ stock_level })
+        .set({ stock_level: sql`${products_regions.stock_level} + ${stock_level}` })
         .where(
             and(
                 eq(products_regions.product_id, product_id),

@@ -2,7 +2,7 @@ export interface Threshold {
     updated_at: Date | null;
     stock_level: number;
     product: {
-        name: string | null;
+        name: string;
         id: string;
     };
     region: {

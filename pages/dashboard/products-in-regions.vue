@@ -110,7 +110,7 @@ async function restock() {
             <h2>Restock {{ restock_dialog.product_name }} in {{ restock_dialog.region_name }}.</h2>
         </template>
 
-        <InputNumber v-model="restock_dialog.stock_level" min="1" />
+        <InputNumber v-model="restock_dialog.stock_level" :min="1" />
 
         <template #footer>
             <Button label="Confirm" :loading="isRestockLoading" @click="restock" />
