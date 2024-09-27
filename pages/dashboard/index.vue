@@ -18,52 +18,8 @@ onMounted(() => {
     }
 })
 
-const restock_dialog = reactive({
-    visible: false,
-    product_name: "",
-    region_name: "",
-    product_id: "",
-    region_id: "",
-    stock_level: 0,
-})
-const isRestockLoading = ref(false);
-function showRestockDialog(
-    product_name: string,
-    region_name: string,
-    product_id: string,
-    region_id: string,
-    stock_level: number,
-) {
-    restock_dialog.visible = true
-    restock_dialog.product_name = product_name
-    restock_dialog.region_name = region_name
-    restock_dialog.product_id = product_id
-    restock_dialog.region_id = region_id
-    restock_dialog.stock_level = stock_level
-}
-function hideRestockDialog() {
-    restock_dialog.visible = false
-    restock_dialog.product_name = ""
-    restock_dialog.region_name = ""
-    restock_dialog.product_id = ""
-    restock_dialog.region_id = ""
-    restock_dialog.stock_level = 0
-}
-async function restock() {
-    isRestockLoading.value = true
-    $fetch("/api/restock", {
-        method: "PUT",
-        body: {
-            product_id: restock_dialog.product_id,
-            region_id: restock_dialog.region_id,
-            stock_level: restock_dialog.stock_level,
-        }
-    })
-        .finally(() => {
-            isRestockLoading.value = false
-            hideRestockDialog()
-        })
-}
+const addStockDialog = useTemplateRef("addStockDialog")
+const transferDialog = useTemplateRef("transferDialog")
 </script>
 
 <template>
@@ -76,7 +32,6 @@ async function restock() {
             </span>
         </h3>
 
-
         <ClientOnly>
             <article class="grid grid-cols-3 gap-4 bg-slate-100 p-4 rounded-lg">
                 <Card v-for="{ product, region, stock_level, updated_at } in thresholds"
@@ -85,8 +40,13 @@ async function restock() {
                         <div class="flex items-center justify-between">
                             <span>{{ product.name }}</span>
 
-                            <Button rounded icon="i-mynaui-corner-right-up"
-                                @click="showRestockDialog(product.name, region.name, product.id, region.id, stock_level)" />
+                            <div class="flex items-center gap-2">
+                                <Button rounded icon="i-mynaui-plus" title="Add Stock"
+                                    @click="addStockDialog?.showDialog(product.name, region.name, product.id, region.id)" />
+
+                                <Button rounded icon="i-mynaui-share" title="Add Stock" severity="warn"
+                                    @click="() => transferDialog?.showTDialog(product.name, region.name, product.id, region.id)" />
+                            </div>
                         </div>
                     </template>
 
@@ -113,17 +73,9 @@ async function restock() {
             </article>
         </ClientOnly>
 
-        <Dialog v-model:visible="restock_dialog.visible">
-            <template #header>
-                <h2>Restock {{ restock_dialog.product_name }} in {{ restock_dialog.region_name }}.</h2>
-            </template>
+        <AddStockDialog ref="addStockDialog" />
 
-            <InputNumber v-model="restock_dialog.stock_level" :min="1" />
-
-            <template #footer>
-                <Button label="Confirm" :loading="isRestockLoading" @click="restock" />
-            </template>
-        </Dialog>
+        <TransferDialog ref="transferDialog" />
 
     </section>
 </template>

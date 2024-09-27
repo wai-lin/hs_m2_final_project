@@ -1,13 +1,13 @@
 <template>
     <main class="grid place-items-center h-screen">
-        <article class="px-8 py-10 rounded-xl bg-slate-100 space-y-4">
+        <article class="max-w-[500px] px-8 py-10 rounded-xl bg-slate-100 space-y-4">
             <h1 class="text-3xl font-bold flex items-end gap-4">
                 <img src="/sustainable.png" class="size-10" />
                 <span>Warehouse Management</span>
             </h1>
 
             <h2 class="text-2xl font-medium">
-                This is the demo of realtime stock level tracker.
+                This is the demo of realtime stock tracker between warehouses in different regions.
             </h2>
 
             <ol class="list-decimal list-inside">

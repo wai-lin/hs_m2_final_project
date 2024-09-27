@@ -9,6 +9,7 @@ definePageMeta({
 const pagination = reactive({
     page: 1,
     page_size: BaseDataTableProps.rowsPerPageOptions?.at(0) || 10,
+    over_treshold: false
 })
 
 function onPage(e: DataTablePageEvent) {
@@ -18,53 +19,8 @@ function onPage(e: DataTablePageEvent) {
 
 const { data, status, refresh } = await useFetch("/api/products-regions", { query: pagination });
 
-const restock_dialog = reactive({
-    visible: false,
-    product_name: "",
-    region_name: "",
-    product_id: "",
-    region_id: "",
-    stock_level: 0,
-})
-const isRestockLoading = ref(false);
-function showRestockDialog(
-    product_name: string,
-    region_name: string,
-    product_id: string,
-    region_id: string,
-    stock_level: number,
-) {
-    restock_dialog.visible = true
-    restock_dialog.product_name = product_name
-    restock_dialog.region_name = region_name
-    restock_dialog.product_id = product_id
-    restock_dialog.region_id = region_id
-    restock_dialog.stock_level = stock_level
-}
-function hideRestockDialog() {
-    restock_dialog.visible = false
-    restock_dialog.product_name = ""
-    restock_dialog.region_name = ""
-    restock_dialog.product_id = ""
-    restock_dialog.region_id = ""
-    restock_dialog.stock_level = 0
-}
-async function restock() {
-    isRestockLoading.value = true
-    $fetch("/api/restock", {
-        method: "PUT",
-        body: {
-            product_id: restock_dialog.product_id,
-            region_id: restock_dialog.region_id,
-            stock_level: restock_dialog.stock_level,
-        }
-    })
-        .finally(() => {
-            isRestockLoading.value = false
-            hideRestockDialog()
-            refresh()
-        })
-}
+const addStockDialog = useTemplateRef("addStockDialog")
+const transferDialog = useTemplateRef("transferDialog")
 </script>
 
 <template>
@@ -98,22 +54,24 @@ async function restock() {
         </Column>
         <Column>
             <template #body="{ data }">
-                <Button rounded size="small" label="Restock"
-                    :severity="data.stock_level < StockLevelThreshold ? 'danger' : ''"
-                    @click="showRestockDialog(data.product_name, data.region.name, data.product_id, data.region.id, data.stock_level)" />
+                <div class="flex items-center gap-4">
+                    <Button rounded size="small" label="Add stock" icon="i-mynaui-plus"
+                        :severity="data.stock_level < StockLevelThreshold ? 'danger' : ''"
+                        @click="addStockDialog?.showDialog(data.product_name, data.region.name, data.product_id, data.region.id)"
+                    />
+
+                    <Button rounded size="small" label="Transfer from" icon="i-mynaui-share"
+                        :severity="data.stock_level < StockLevelThreshold ? 'warn' : 'help'"
+                        @click="transferDialog?.showTDialog(data.product_name, data.region.name, data.product_id, data.region.id)"
+                    />
+                </div>
             </template>
         </Column>
     </DataTable>
 
-    <Dialog v-model:visible="restock_dialog.visible">
-        <template #header>
-            <h2>Restock {{ restock_dialog.product_name }} in {{ restock_dialog.region_name }}.</h2>
-        </template>
+    <!-- Add stock Dialog -->
+    <AddStockDialog ref="addStockDialog" :restockCallback="refresh" />
 
-        <InputNumber v-model="restock_dialog.stock_level" :min="1" />
-
-        <template #footer>
-            <Button label="Confirm" :loading="isRestockLoading" @click="restock" />
-        </template>
-    </Dialog>
+    <!-- Transfer Dialog -->
+    <TransferDialog ref="transferDialog" :transferCallback="refresh" />
 </template>
