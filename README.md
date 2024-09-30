@@ -1,75 +1,31 @@
-# Nuxt 3 Minimal Starter
+# Warehouse Manager
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### Setup
 
-## Setup
+You can use `npm` or `pnpm`.
 
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+> IMPORTANT!
+> 
+> Check and Edit db credentials as needed in `database/pg_client.ts` and `database/redis_client.ts`.
 
 ```bash
-# npm
-npm run dev
+pnpm install # OR npm install
 
-# pnpm
-pnpm run dev
+pnpm migrate # OR npm run migrate
 
-# yarn
-yarn dev
-
-# bun
-bun run dev
+pnpm dev # OR npm run dev
 ```
 
-## Production
+___
 
-Build the application for production:
+### Database Seeding
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+curl http://localhost:3000/api/seed
 ```
 
-Locally preview production build:
+### Browse the Project
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+Open http://localhost:3000 in browser.
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
